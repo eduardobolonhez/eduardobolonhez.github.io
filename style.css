@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+:root {
+  /* Light Theme */
+  --bg-color: #f0f4f8;
+  --topbar-bg: #003366; /* Deep blue accent */
+  --topbar-text: #ffffff;
+  --topbar-dim: #b3cce6;
+  --main-bg: #ffffff;
+  --text-color: #2d3748;
+  --text-dim: #718096;
+  --accent-color: #0055a4;
+  --heading-color: #003366;
+  --h1-color: #000000;
+  --border-color: #e2e8f0;
+  --link-color: #0055a4;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] {
+  /* Dark Theme */
+  --bg-color: #0f172a;
+  --topbar-bg: #001f3f; 
+  --topbar-text: #f8fafc;
+  --topbar-dim: #94a3b8;
+  --main-bg: #1e293b;
+  --text-color: #e2e8f0;
+  --text-dim: #94a3b8;
+  --accent-color: #3b82f6;
+  --heading-color: #60a5fa;
+  --h1-color: #ffffff;
+  --border-color: #334155;
+  --link-color: #60a5fa;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Bypass transitions during html2pdf snapshot to avoid flashes */
+.pdf-export-mode {
+  font-size: 0.85rem;
+}
+.pdf-export-mode * {
+  transition: none !important;
+}
+.pdf-export-mode .topbar {
+  background-color: transparent !important;
+  color: #000000 !important;
+  padding: 0 0 2rem 0 !important;
+}
+.pdf-export-mode .topbar h2, 
+.pdf-export-mode .topbar a {
+  color: #000000 !important;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1000px; /* Reduced since there's no sidebar taking space */
+  margin: 2rem auto;
+  border-radius: 12px;
+  background-color: var(--main-bg);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar */
+.topbar {
+  background-color: var(--topbar-bg);
+  color: var(--topbar-text);
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.topbar h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.1rem;
+  line-height: 1.2;
+}
+
+.topbar h2 {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--topbar-dim);
+  margin-bottom: 0.8rem;
+}
+
+.personal-info {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.personal-info li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.personal-info a {
+  color: var(--topbar-text);
+  text-decoration: none;
+}
+
+.personal-info a:hover {
+  text-decoration: underline;
+}
+
+/* Main Content */
+.main-content {
+  padding: 3rem 4rem;
+  position: relative; /* For absolutely positioning the buttons */
+  background-color: var(--main-bg);
+}
+
+.controls {
+  position: absolute;
+  top: 1.5rem;
+  right: 2rem;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover {
+  background-color: var(--border-color);
+}
+
+/* Content dynamically injected by mammoth */
+.cv-content h1 { 
+  color: var(--h1-color); /* Dynamically black or white depending on theme */
+  font-size: 1.6rem;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
+  /* Removed border-bottom entirely per requirements */
+}
+
+.cv-content h2 {
+  color: var(--heading-color);
+  font-size: 1.25rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.cv-content h3 {
+  font-size: 1.1rem;
+  color: var(--text-color);
+  margin-top: 1rem;
+}
+
+.cv-content p {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+}
+
+.cv-content ul {
+  list-style: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.cv-content li {
+  margin-bottom: 0.5rem;
+}
+
+.cv-content a {
+  color: var(--link-color);
+  text-decoration: none;
+}
+
+.cv-content h1, 
+.cv-content h2, 
+.cv-content h3 {
+  page-break-after: avoid;
+  break-after: avoid;
+}
+
+.cv-content h1, 
+.cv-content h2, 
+.cv-content h3, 
+.cv-content p, 
+.cv-content ul, 
+.cv-content li {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    margin: 0;
+    border-radius: 0;
+  }
+  .controls {
+    top: 1rem;
+    right: 1rem;
+  }
+  .main-content {
+    padding: 2.5rem 1.5rem;
+  }
+  .topbar {
+    padding: 2rem 1.5rem;
+  }
+  .personal-info {
+    gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Print CSS natively as fallback */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  .container {
+    box-shadow: none;
+    margin: 0;
+    border-radius: 0;
+  }
+  .topbar {
+    background-color: #1e3a8a !important;
+    color: white !important;
+    padding: 1.5rem 2rem;
+    -webkit-print-color-adjust: exact; 
+    print-color-adjust: exact;
+  }
+  .topbar h2, .topbar a {
+    color: #e2e8f0 !important;
+  }
+  .main-content {
+    padding: 2rem 2.5rem;
+    background-color: white !important;
+  }
+  .controls {
+    display: none !important;
+  }
+  .cv-content h1 {
+    color: black !important;
+  }
+  .cv-content h2 {
+    color: #1e3a8a !important;
+  }
+  .cv-content h1, .cv-content h2, .cv-content h3, .cv-content p, .cv-content ul, .cv-content li {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+}

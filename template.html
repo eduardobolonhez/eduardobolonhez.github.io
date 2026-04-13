@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduardo Bolonhez - CV</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Ionicons for standard icons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        .lang-en { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="cv-container">
+        
+        <header class="topbar">
+            <h1>Eduardo Bolonhez</h1>
+            <h2>
+                <span class="lang-pt">Gestão de Projetos | Energia</span>
+                <span class="lang-en">Project Manager | Energy</span>
+            </h2>
+
+            <ul class="personal-info">
+                <li>
+                    <ion-icon name="mail-outline"></ion-icon>
+                    <a href="mailto:eduardo.bolonhez@gmail.com">eduardo.bolonhez@gmail.com</a>
+                </li>
+                <li>
+                    <ion-icon name="call-outline"></ion-icon>
+                    +55 (21) 99832-5010
+                </li>
+                <li>
+                    <ion-icon name="logo-linkedin"></ion-icon>
+                    <a href="https://linkedin.com/in/eduardobolonhez" target="_blank">linkedin.com/in/eduardobolonhez</a>
+                </li>
+                <li>
+                    <ion-icon name="location-outline"></ion-icon>
+                    <span class="lang-pt">Ipanema/RJ, Brasil</span>
+                    <span class="lang-en">Ipanema/RJ, Brazil</span>
+                </li>
+            </ul>
+        </header>
+
+        <main class="main-content">
+            <div class="controls">
+                <button class="btn" id="lang-toggle">
+                    <ion-icon name="language-outline"></ion-icon>
+                    <span class="lang-pt">English</span>
+                    <span class="lang-en">Português</span>
+                </button>
+                <button class="btn" id="theme-toggle">
+                    <ion-icon name="moon-outline" id="theme-icon"></ion-icon>
+                    <span class="lang-pt">Tema</span>
+                    <span class="lang-en">Theme</span>
+                </button>
+                <button class="btn" id="download-pdf-btn">
+                    <ion-icon name="download-outline"></ion-icon>
+                    <span class="lang-pt">Baixar PDF</span>
+                    <span class="lang-en">Download PDF</span>
+                </button>
+            </div>
+            
+            <div id="content-pt" class="cv-content pt-br lang-pt">
+                {{CONTENT_PT}}
+            </div>
+            <div id="content-en" class="cv-content en lang-en">
+                {{CONTENT_EN}}
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Theme Logic
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeIcon.setAttribute('name', 'sunny-outline');
+        }
+
+        themeToggle.addEventListener('click', () => {
+            if (document.documentElement.getAttribute('data-theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+                themeIcon.setAttribute('name', 'moon-outline');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                themeIcon.setAttribute('name', 'sunny-outline');
+            }
+        });
+
+        // Language Logic
+        const langToggle = document.getElementById('lang-toggle');
+        const currentLang = localStorage.getItem('lang') || 'pt';
+
+        function applyLanguage(lang) {
+            document.documentElement.lang = lang === 'pt' ? 'pt-br' : 'en';
+            if(lang === 'en') {
+                document.querySelectorAll('.lang-pt').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.lang-en').forEach(el => {
+                    // avoid breaking block-level spans by ensuring logical display logic
+                    if (el.tagName === 'DIV' || el.tagName === 'P') el.style.display = 'block';
+                    else el.style.display = 'inline-block';
+                });
+            } else {
+                document.querySelectorAll('.lang-en').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.lang-pt').forEach(el => {
+                    if (el.tagName === 'DIV' || el.tagName === 'P') el.style.display = 'block';
+                    else el.style.display = 'inline-block';
+                });
+            }
+            // Ensure icons are handled well
+            document.querySelectorAll('ion-icon').forEach(icon => {
+               icon.style.display = 'inline-block';
+            });
+        }
+
+        applyLanguage(currentLang);
+
+        langToggle.addEventListener('click', () => {
+            const activeLang = localStorage.getItem('lang') || 'pt';
+            const switchLang = activeLang === 'pt' ? 'en' : 'pt';
+            localStorage.setItem('lang', switchLang);
+            applyLanguage(switchLang);
+        });
+
+        // PDF download logic
+        const downloadBtn = document.getElementById("download-pdf-btn");
+        if (downloadBtn) {
+            downloadBtn.addEventListener("click", function () {
+                const element = document.getElementById("cv-container");
+                const prevTheme = document.documentElement.getAttribute('data-theme');
+                document.documentElement.classList.add('pdf-export-mode'); 
+                document.documentElement.setAttribute('data-theme', 'light');
+                
+                document.querySelector('.controls').style.display = 'none';
+
+                const opt = {
+                    margin:       0.6,
+                    filename:     'Eduardo_Bolonhez_CV.pdf',
+                    image:        { type: 'jpeg', quality: 0.98 },
+                    html2canvas:  { scale: 2, useCORS: true },
+                    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+                    pagebreak:    { mode: ['css', 'legacy'] }
+                };
+
+                html2pdf().set(opt).from(element).save().then(() => {
+                    if (prevTheme === 'dark') {
+                        document.documentElement.setAttribute('data-theme', 'dark');
+                    } else {
+                        document.documentElement.setAttribute('data-theme', 'light');
+                    }
+                    document.documentElement.classList.remove('pdf-export-mode'); 
+                    document.querySelector('.controls').style.display = 'flex';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
